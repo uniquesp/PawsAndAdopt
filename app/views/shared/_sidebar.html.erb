@@ -1,0 +1,83 @@
+<div class="d-flex"> 
+  <div class="d-flex flex-column flex-shrink-0 p-3 bg-white shadow" style="width: 250px; height: 100vh;">
+    
+    <!-- User Role Centered -->
+    <div class="text-center mb-2 mt-3">
+      <h4 class="fw-bold" style="color: rgb(105, 108, 255);">
+        <%= current_user.role.humanize %>
+      </h4>
+    </div>
+    <hr>
+
+    <!-- Navigation Items -->
+    <ul class="nav nav-pills flex-column mb-auto gap-2">
+      <li class="nav-item">
+        <a href="<%= admin_dashboard_path %>" 
+          class="nav-link text-dark d-flex align-items-center p-2 rounded 
+          <%= 'active text-white' if current_page?(admin_dashboard_path) %>" 
+          style="<%= 'background-color: rgb(105, 108, 255);' if current_page?(admin_dashboard_path) %>" 
+          onmouseover="this.style.backgroundColor='rgb(105, 108, 255)'; this.classList.add('text-white');" 
+          onmouseout="if (!this.classList.contains('active')) { this.style.backgroundColor='transparent'; this.classList.remove('text-white'); }">
+          <i class="fa-solid fa-chart-line me-2"></i> Dashboard
+        </a>
+      </li>
+
+      <li>
+        <a href="<%= admin_users_path %>" 
+          class="nav-link text-dark d-flex align-items-center p-2 rounded <%= 'active text-white' if current_page?(admin_users_path) %>" 
+          style="<%= 'background-color: rgb(105, 108, 255);' if current_page?(admin_users_path) %>" 
+          onmouseover="this.style.backgroundColor='rgb(105, 108, 255)'; this.classList.add('text-white');" 
+          onmouseout="if (!this.classList.contains('active')) { this.style.backgroundColor='transparent'; this.classList.remove('text-white'); }">
+          <i class="fa-solid fa-users me-2"></i> Users
+        </a>
+      </li>
+
+      <li>
+        <a href="<%= admin_categories_path %>" class="nav-link text-dark d-flex align-items-center p-2 rounded 
+          <%= 'active text-white' if current_page?(admin_categories_path) %>"
+          style="<%= 'background-color: rgb(105, 108, 255);' if current_page?(admin_categories_path) %>" 
+          onmouseover="this.style.backgroundColor='rgb(105, 108, 255)'; this.classList.add('text-white');" 
+          onmouseout="if (!this.classList.contains('active')) { this.style.backgroundColor='transparent'; this.classList.remove('text-white'); }">
+          <i class="fa-solid fa-layer-group me-2"></i> Categories
+        </a>
+      </li>
+      <li>
+        <a href="<%= admin_breeds_path %>" class="nav-link text-dark d-flex align-items-center p-2 rounded 
+          <%= 'active text-white' if current_page?(admin_breeds_path) %>"
+          style="<%= 'background-color: rgb(105, 108, 255);' if current_page?(admin_breeds_path) %>" 
+          onmouseover="this.style.backgroundColor='rgb(105, 108, 255)'; this.classList.add('text-white');" 
+          onmouseout="if (!this.classList.contains('active')) { this.style.backgroundColor='transparent'; this.classList.remove('text-white'); }">
+          <i class="fa-solid fa-dog me-2"></i> Breeds
+        </a>
+      </li>
+      <li>
+        <a href="<%= admin_pets_path %>" class="nav-link text-dark d-flex align-items-center p-2 rounded 
+          <%= 'active text-white' if current_page?(admin_pets_path) %>"
+          style="<%= 'background-color: rgb(105, 108, 255);' if current_page?(admin_pets_path) %>" 
+          onmouseover="this.style.backgroundColor='rgb(105, 108, 255)'; this.classList.add('text-white');" 
+          onmouseout="if (!this.classList.contains('active')) { this.style.backgroundColor='transparent'; this.classList.remove('text-white'); }">
+          <i class="fa-solid fa-paw me-2"></i> Pets
+        </a>
+      </li>
+      <li>
+        <a href="<%= admin_donate_pets_path %>" class="nav-link text-dark d-flex align-items-center p-2 rounded 
+          <%= 'active text-white' if current_page?(admin_donate_pets_path) %>"
+          style="<%= 'background-color: rgb(105, 108, 255);' if current_page?(admin_donate_pets_path) %>" 
+          onmouseover="this.style.backgroundColor='rgb(105, 108, 255)'; this.classList.add('text-white');" 
+          onmouseout="if (!this.classList.contains('active')) { this.style.backgroundColor='transparent'; this.classList.remove('text-white'); }">
+          <i class="fa-solid fa-heart me-2"></i> Donate Pet Requests
+        </a>
+      </li>
+      <li>
+        <a href="<%= admin_adopt_pets_path %>" class="nav-link text-dark d-flex align-items-center p-2 rounded 
+          <%= 'active text-white' if current_page?(admin_adopt_pets_path) %>"
+          style="<%= 'background-color: rgb(105, 108, 255);' if current_page?(admin_adopt_pets_path) %>" 
+          onmouseover="this.style.backgroundColor='rgb(105, 108, 255)'; this.classList.add('text-white');" 
+          onmouseout="if (!this.classList.contains('active')) { this.style.backgroundColor='transparent'; this.classList.remove('text-white'); }">
+          <i class="fa-solid fa-home me-2"></i> Adopt Pet Requests
+        </a>
+      </li>
+    </ul>
+    <hr>
+</div>
+

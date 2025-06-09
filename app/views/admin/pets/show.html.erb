@@ -1,0 +1,57 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-sm">
+        <div class="row g-0">
+          <!-- Carousel for Pet Images -->
+          <% if @pet.pet_images.attached? %>
+            <div class="col-md-6">
+              <div id="petImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  <% @pet.pet_images.each_with_index do |image, index| %>
+                    <div class="carousel-item <%= 'active' if index == 0 %>">
+                      <%= image_tag image, class: "d-block w-100 rounded", style: "width: 300px; height: 500px; object-fit: cover; border: 3px solid rgb(105, 108, 255);" %>                    </div>
+                  <% end %>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#petImageCarousel" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#petImageCarousel" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Pet Info -->
+          <div class="col-md-6">
+            <div class="card-body">
+              <h4 class="card-title text-primary text-center"><%= @pet.category.category_name if @pet.category %> - <%= @pet.breed.breed_name if @pet.breed %></h4>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Age:</strong> <%= @pet.age %>  <%= @pet.age_unit %></li>
+                <li class="list-group-item"><strong>Gender:</strong> <%= @pet.gender %></li>
+                <li class="list-group-item"><strong>Status:</strong> <%= @pet.status %></li>
+                <li class="list-group-item"><strong>Temperament:</strong> <%= @pet.temperament %></li>
+                <li class="list-group-item"><strong>Vaccination Status:</strong> 
+                  <span class="badge <%= @pet.vaccination_status ? 'bg-success' : 'bg-danger' %>">
+                    <%= @pet.vaccination_status ? "Vaccinated" : "Not Vaccinated" %>
+                  </span>
+                </li>
+                <li class="list-group-item"><strong>Medical History:</strong> <%= @pet.medical_history.presence || "No records" %></li>
+                <li class="list-group-item"><strong>Recommended Food:</strong> <%= @pet.recommended_food.presence || "Not specified" %></li>
+                <li class="list-group-item"><strong>Common Health Issues:</strong> <%= @pet.common_health_issues.presence || "No issues reported" %></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer with Updated Button Color -->
+        <div class="card-footer text-center bg-light">
+          <%= link_to "Back to Requests", admin_pets_path, class: "btn text-white px-4 py-2", style: "background-color: rgb(105, 108, 255);" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

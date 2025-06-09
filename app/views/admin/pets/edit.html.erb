@@ -1,0 +1,176 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Edit Pet</h5>
+      </div>
+      
+      <div class="card-body">
+        <%= form_with model: @pet, url: admin_pet_path(@pet), method: :patch, local: true, class: "needs-validation", multipart: true do |f| %>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <%= f.label :category_id, "Category", class: "form-label" %>
+              <%= f.collection_select :category_id, @categories, :id, :category_name, 
+                { prompt: "Select Category" }, 
+                { class: "form-select", id: "category-select", required: true } %>
+            </div>
+
+            <div class="col-md-6">
+              <%= f.label :breed_id, "Breed", class: "form-label" %>
+              <%= f.collection_select :breed_id, @breeds, :id, :breed_name, 
+                { prompt: "Select Breed" }, 
+                { class: "form-select", id: "breed-select", required: true, 
+                  data: { selected: f.object.breed_id } } %>
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <%= f.label :age, "Age", class: "form-label" %>
+              <%= f.number_field :age, class: "form-control", required: true %>
+            </div>
+            <div class="col-md-4">
+              <%= f.label :age_unit, "Age Unit", class: "form-label" %>
+              <%= f.select :age_unit, [["Days", "days"], ["Months", "months"], ["Years", "years"]], { prompt: "Select Age Unit" }, class: "form-select", required: true %>
+            </div>
+            <div class="col-md-4">
+              <%= f.label :temperament, "Temperament", class: "form-label" %>
+              <%= f.text_field :temperament, class: "form-control" , required: true%>
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <%= f.label :gender, "Gender", class: "form-label" %>
+              <%= f.select :gender, [["Male", 1], ["Female", 2], ["Unknown", 0]], { prompt: "Select Gender" }, class: "form-select" , required: true%>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :status, "Status", class: "form-label" %>
+              <%= f.select :status, [["Available", 0], ["Unavailable", 1]], { prompt: "Select Status" }, class: "form-select" , required: true%>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <%= f.label :pet_images, "Upload Images", class: "form-label" %>
+            <%= f.file_field :pet_images, multiple: true, accept: "image/*", class: "form-control", id: "pet-image-input", onchange: "handleImageUpload(event)" %>
+            <div id="image-list" class="mt-3 row"></div>
+          </div>
+          
+          <!-- Show Existing Images -->
+          <div class="mb-3">
+            <h6>Existing Images</h6>
+            <div class="row">
+              <% @pet.pet_images.each do |image| %>
+                <div class="col-md-3 mb-2" id="existing-image-<%= image.id %>">
+                  <img src="<%= url_for(image) %>" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;">
+                  <button type="button" class="btn btn-danger btn-sm mt-1" onclick="removeExistingImage(<%= image.id %>)">Remove</button>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-between">
+            <%= link_to "Cancel", admin_pets_path, class: "btn btn-outline-secondary" %>
+            <%= f.submit "Update Pet", class: "btn text-white", style: "background-color: rgb(105, 108, 255);" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Image Upload, Preview & Remove -->
+<script>
+  if (!window.uploadedFiles) {
+    window.uploadedFiles = [];
+  }
+
+    const form = document.querySelector('form');
+    const imageList = document.getElementById("image-list");
+    const input = document.getElementById("pet-image-input");
+
+    if (form) {
+      form.addEventListener("submit", () => {
+        // Clear uploadedFiles array
+        uploadedFiles = [];
+
+        // Reset file input
+        input.value = "";
+
+        // Remove image previews
+        while (imageList.firstChild) {
+          imageList.removeChild(imageList.firstChild);
+        }
+      });
+    }
+
+  function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    const imageList = document.getElementById("image-list");
+
+    files.forEach((file) => {
+      if (!uploadedFiles.some((f) => f.name === file.name && f.size === file.size)) {
+        uploadedFiles.push(file);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const colDiv = document.createElement("div");
+          colDiv.className = "col-md-3 mb-2";
+          
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.className = "img-thumbnail";
+          img.style = "width: 150px; height: 150px; object-fit: cover; cursor: pointer;";
+          
+          const removeBtn = document.createElement("button");
+          removeBtn.innerText = "Remove";
+          removeBtn.className = "btn btn-danger btn-sm mt-1";
+          removeBtn.onclick = function () {
+            removeImage(file, colDiv);
+          };
+
+          const btnDiv = document.createElement("div");
+          btnDiv.className = "mt-1 text-center";
+          btnDiv.appendChild(removeBtn);
+
+          colDiv.appendChild(img);
+          colDiv.appendChild(btnDiv);
+          imageList.appendChild(colDiv);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    updateFileInput();
+  }
+
+  
+  function updateFileInput() {
+    const input = document.getElementById("pet-image-input");
+    const dataTransfer = new DataTransfer();
+    uploadedFiles.forEach((file) => dataTransfer.items.add(file));
+    input.files = dataTransfer.files;
+  }
+  
+  function removeImage(file, element) {
+    uploadedFiles = uploadedFiles.filter((f) => f !== file);
+    element.remove();
+    updateFileInput();
+  }
+
+  function removeExistingImage(imageId) {
+    fetch(`/admin/pets/remove_image/${imageId}`, {
+      method: "DELETE",
+      headers: {
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        const imageDiv = document.getElementById(`existing-image-${imageId}`);
+        if (imageDiv) imageDiv.remove();
+      }
+    });
+  }
+</script>

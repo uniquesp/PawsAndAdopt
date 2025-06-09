@@ -1,0 +1,70 @@
+<!-- Sticky Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(105, 108, 255); height: 70px;">
+  <div class="container-fluid">
+    <!-- Project Name with Icon -->
+    <a class="navbar-brand fw-bold d-flex align-items-center" href="#" style="transition: color 0.3s; font-size: 1.5rem;">
+      <i class="fa-solid fa-paw me-2"></i> Paws&Adopt
+    </a>
+
+    <!-- Responsive Toggle Button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <% if user_signed_in? %>
+          <!-- Admin Profile Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <%= image_tag(current_user.profile_image_url, 
+                  alt: "Profile Picture", class: "rounded-circle", width: 40, height: 40, style: "object-fit: cover;") %>
+              <span class="ms-2 fw-semibold"><%= current_user.email %></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="adminDropdown">
+             <li>
+                <%= link_to admin_admins_path(current_user), class: "dropdown-item d-flex align-items-center text-success" do %>
+                  <i class="fa-solid fa-user-edit me-2"></i> Profile
+                <% end %>
+             </li>
+
+              <li>
+                <%= button_to destroy_user_session_path, method: :delete, class: "dropdown-item text-danger d-flex align-items-center" do %>
+                  <i class="fa-solid fa-sign-out-alt me-2"></i> Logout
+                <% end %>
+              </li>
+            </ul>
+          </li>
+        <% else %>
+          <!-- Sign In Button -->
+          <li class="nav-item">
+            <%= button_to "Sign In", new_user_session_path, class: "btn btn-light text-dark ms-2 fw-semibold px-3 shadow-sm" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Flash Messages -->
+<% flash.each do |type, message| %>
+  <div class="alert <%= flash_class(type) %> alert-dismissible fade show shadow-sm position-fixed top-0 start-50 translate-middle-x text-center" 
+       role="alert" style="max-width: 400px; z-index: 1050;">
+    <%= message %>
+  </div>
+<% end %>
+
+<script>
+  // Automatically fade out flash messages after 3 seconds (3000ms)
+document.addEventListener("turbo:load", function () {
+  setTimeout(() => {
+    let flashMessages = document.querySelectorAll(".alert");
+    flashMessages.forEach(msg => {
+      msg.style.opacity = "0";  // Fade out
+      setTimeout(() => msg.remove(), 500); // Remove after fade-out
+    });
+  }, 3000);
+});
+
+</script>

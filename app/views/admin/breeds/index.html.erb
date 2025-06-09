@@ -1,0 +1,79 @@
+<!-- Add Button Positioned Above Table on Left -->
+<div class="mb-4">
+    <%= link_to new_admin_breed_path, class: 'btn text-white', style: "background-color: rgb(105, 108, 255);" do %>
+        <i class="fas fa-plus me-2"></i>Add Breed
+    <% end %>
+</div>
+
+<div class="card">
+  <!-- Card Header with Title and Search -->
+  <div class="card-header d-flex justify-content-between align-items-center" style="background-color: rgb(105, 108, 255);">
+    <h5 class="mb-0 text-white">Breeds List</h5>
+    
+    <div class="d-flex">
+      <!-- Search Box -->
+      <input type="text" id="searchBox" class="form-control me-2" placeholder="Search breeds..." style="width: 250px;">
+    </div>
+  </div>
+
+  <div class="table-responsive text-nowrap p-3">
+    <!-- Breeds Table -->
+    <table class="table">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Breed Name</th>
+          <th>Category Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0" id="breedTable">
+        <% if @breeds.present? %>
+          <% @breeds.each_with_index do |breed, i| %>
+            <tr>
+              <td><strong><%= @breeds.offset_value + i + 1 %></strong></td>
+              <td class="searchable"><%= breed.breed_name %></td>
+              <td class="searchable"><%= breed.category.category_name if breed.category %></td>
+              <td>
+                <!-- Edit Icon -->
+                <%= link_to edit_admin_breed_path(breed), class: "text-warning me-3", title: "Edit" do %>
+                  <i class="fas fa-pencil-alt"></i>
+                <% end %>
+
+                <!-- Delete Icon -->
+                <%= link_to discard_admin_breed_path(breed), 
+                    data: { turbo_method: :patch, turbo_confirm: "Are you sure you want to delete this breed?" }, 
+                    class: "text-danger", 
+                    rel: "nofollow", 
+                    title: "Delete Breed" do %>
+                  <i class="fas fa-trash-alt"></i>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="4" class="text-center">No breeds found.</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+      <div>
+        <%= pagination_links(@breeds) %>
+      </div>
+  </div>
+</div>
+
+<!-- JavaScript for Search Functionality -->
+<script>
+  document.getElementById("searchBox").addEventListener("keyup", function () {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#breedTable tr");
+
+    rows.forEach(row => {
+      let text = row.querySelectorAll(".searchable");
+      let found = Array.from(text).some(cell => cell.textContent.toLowerCase().includes(filter));
+      row.style.display = found ? "" : "none";
+    });
+  });
+</script>

@@ -1,0 +1,28 @@
+# == Schema Information
+#
+# Table name: pets
+#
+#  id                   :integer          not null, primary key
+#  age                  :integer
+#  gender               :integer          not null
+#  temperament          :string
+#  vaccination_status   :boolean          default(FALSE)
+#  medical_history      :text
+#  recommended_food     :text
+#  common_health_issues :text
+#  status               :integer
+#  pet_image_url        :string
+#  breed_id             :integer          not null
+#  category_id          :integer          not null
+#  discarded_at         :datetime
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  age_unit             :string
+#
+require "test_helper"
+
+class PetTest < ActiveSupport::TestCase
+  # test "the truth" do
+  #   assert true
+  # end
+end

@@ -1,0 +1,53 @@
+<div class="card mt-4">
+    <!-- Card Header with Title and Search -->
+    <div class="card-header d-flex justify-content-between align-items-center" style="background-color: rgb(105, 108, 255);">
+        <h5 class="mb-0 text-white">Donation Requests</h5>
+        <input type="text" id="searchBox" class="form-control" placeholder="Search requests..." style="width: 250px;">
+    </div>
+
+    <div class="table-responsive text-nowrap p-3">
+        <!-- Donation Requests Table -->
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>User Name</th>
+                    <th>Category</th>
+                    <th>Breed</th>
+                    <th>Pet Gender</th>
+                    <th>Expected Donation Date</th>
+                    <th>Actual Donation Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0" id="donationTable">
+                <% if @donate_pets.present? %>
+                        <% @donate_pets.each_with_index do |donate_pet, i| %>
+                        <%= render partial: "admin/donate_pets/donate_pet", locals: { donate_pet: donate_pet, index: @donate_pets.offset_value + i + 1 } %>
+                    <% end %>
+                <% else %>
+                    <tr>
+                        <td colspan="10" class="text-center">No donation requests found.</td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+        <div>
+            <%= pagination_links(@donate_pets) %>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Search Functionality -->
+<script>
+    document.getElementById("searchBox").addEventListener("keyup", function () {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#donationTable tr");
+
+        rows.forEach(row => {
+            let text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+</script>

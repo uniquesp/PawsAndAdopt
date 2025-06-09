@@ -1,0 +1,45 @@
+<tr id="adopt_pet_<%= adopt_pet.id %>" class="searchable">
+  <td><%= index %></td>
+  <td><%= adopt_pet.user.first_name %> <%= adopt_pet.user.last_name %></td>
+  <td><%= adopt_pet.category_name %></td>
+  <td><%= adopt_pet.breed_name %></td>
+  <td><%= adopt_pet.pet_gender %></td>
+  <td><%= adopt_pet.expected_adoption_date.strftime("%d-%m-%Y") if adopt_pet.expected_adoption_date %></td>
+  
+  <td>
+    <%= form_with model: adopt_pet, url: admin_adopt_pet_path(adopt_pet), method: :patch, data: { turbo_frame: "adopt_pet_#{adopt_pet.id}" } do |form| %>
+      <%= form.date_field :actual_adoption_date, value: adopt_pet.actual_adoption_date, class: "form-control form-control-sm", onchange: "this.form.submit()" %>
+    <% end %>
+  </td>
+
+  <td>
+    <% status_class = adopt_pet.pending? ? 'bg-warning text-dark' : (adopt_pet.accepted? ? 'bg-success text-white' : 'bg-danger text-white') %>
+    <span class="badge <%= status_class %>">
+      <%= adopt_pet.status.capitalize %>
+    </span>
+  </td>
+
+  <td>
+    <div class="d-flex gap-2">
+      <%= link_to admin_adopt_pet_path(adopt_pet), class: "btn btn-sm btn-outline-primary", title: "View" do %>
+        <i class="fas fa-eye"></i>
+      <% end %>
+
+      <%= link_to admin_adopt_pet_path(adopt_pet, adopt_pet: { status: "accepted" }), 
+          method: :patch, 
+          class: "btn btn-sm btn-outline-success", 
+          data: { turbo_method: :patch, turbo_frame: "adopt_pet_#{adopt_pet.id}", turbo_stream:true,
+                  turbo_confirm: "Are you sure you want to accept this request?" } do %>
+        <i class="fas fa-check-circle"></i>
+      <% end %>
+
+      <%= link_to admin_adopt_pet_path(adopt_pet, adopt_pet: { status: "rejected" }), 
+          method: :patch, 
+          class: "btn btn-sm btn-outline-danger", 
+          data: { turbo_method: :patch, turbo_frame: "adopt_pet_#{adopt_pet.id}", 
+                  turbo_confirm: "Are you sure you want to reject this request?" } do %>
+        <i class="fas fa-times-circle"></i>
+      <% end %>
+    </div>
+  </td>
+</tr>

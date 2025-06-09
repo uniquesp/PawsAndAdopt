@@ -1,0 +1,37 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <!-- Card Header with Custom Color -->
+        <div class="card-header text-white text-center" style="background-color: rgb(105, 108, 255);">
+          <h4 class="mb-0">Admin Details</h4>
+        </div>
+        
+        <div class="card-body text-center">
+          <!-- Enlarged Profile Picture -->
+          <img src="<%=  @admin.profile_image_url %>" 
+               alt="Profile Picture" 
+               class="img-fluid rounded-circle mb-3 border" 
+               width="120" 
+               height="120"
+               style="border: 3px solid rgb(105, 108, 255);">
+          
+          <!-- User Info -->
+          <h5 class="card-title"><%=  @admin.first_name %> <%=  @admin.last_name %></h5>
+          <p class="card-text mb-1">
+            <i class="fa-solid fa-envelope" style="color: rgb(105, 108, 255);"></i> <%=  @admin.email %>
+          </p>
+          <p class="card-text">
+            <i class="fa-solid fa-phone" style="color: rgb(105, 108, 255);"></i> <%=  @admin.phone_no %>
+          </p>
+        </div>
+        
+        <!-- Footer with Updated Button Color -->
+        <div class="card-footer text-center bg-light">
+          <%= link_to "Back to Requests", admin_dashboard_path, class: "btn text-white px-4 py-2", style: "background-color: rgb(105, 108, 255);" %>
+          <%= link_to "Update Profile", edit_admin_admins_path(current_user), class: "btn text-white px-4 py-2", style: "background-color: rgb(105, 108, 255);" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

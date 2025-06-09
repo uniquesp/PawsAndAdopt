@@ -1,0 +1,5 @@
+<turbo-stream action="replace" target="donate_pet_<%= @donate_pet.id %>">
+  <template>
+    <%= render partial: "admin/donate_pets/donate_pet", formats: :html, locals: { donate_pet: @donate_pet, index: @donate_pet_index } %>
+  </template>
+</turbo-stream>
