@@ -8,7 +8,6 @@ on:
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -16,41 +15,29 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: backend/.ruby-version
           bundler-cache: true
-          working-directory: backend
 
-      - name: Install dependencies
-        working-directory: backend
-        run: bundle install
-
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        working-directory: backend
+      - name: Scan for common Rails security vulnerabilities
         run: bundle exec brakeman --no-pager
+        working-directory: backend
 
   scan_js:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
       - name: Install JS dependencies
-        working-directory: frontend
         run: yarn install
-
-      - name: Audit JS packages with yarn
         working-directory: frontend
+
+      - name: Audit JS packages
         run: yarn audit --groups dependencies
+        working-directory: frontend
 
   lint:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -58,24 +45,18 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: backend/.ruby-version
           bundler-cache: true
-          working-directory: backend
 
-      - name: Install dependencies
-        working-directory: backend
-        run: bundle install
-
-      - name: Lint code for consistent style
-        working-directory: backend
+      - name: Lint code with RuboCop
         run: bundle exec rubocop -f github
+        working-directory: backend
 
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Install system packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips sqlite3
+      - name: Install required Linux packages
+        run: sudo apt-get update && sudo apt-get install -y google-chrome-stable curl libjemalloc2 libvips sqlite3
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -83,25 +64,20 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: backend/.ruby-version
           bundler-cache: true
-          working-directory: backend
 
-      - name: Install dependencies
-        working-directory: backend
-        run: bundle install
-
-      - name: Run tests
-        working-directory: backend
+      - name: Run Rails tests
         env:
           RAILS_ENV: test
         run: |
           bundle exec rails db:test:prepare
           bundle exec rails test:system
+        working-directory: backend
 
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
+      - name: Upload failed screenshots
         if: failure()
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: backend/tmp/screenshots
