@@ -12,10 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Read Ruby version from backend/.ruby-version
+        id: ruby-version
+        run: echo "version=$(cat backend/.ruby-version)" >> $GITHUB_OUTPUT
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: backend/.ruby-version
+          ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
 
       - name: Scan for common Rails security vulnerabilities
@@ -42,10 +46,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Read Ruby version from backend/.ruby-version
+        id: ruby-version
+        run: echo "version=$(cat backend/.ruby-version)" >> $GITHUB_OUTPUT
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: backend/.ruby-version
+          ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
 
       - name: Lint code with RuboCop
@@ -61,10 +69,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Read Ruby version from backend/.ruby-version
+        id: ruby-version
+        run: echo "version=$(cat backend/.ruby-version)" >> $GITHUB_OUTPUT
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: backend/.ruby-version
+          ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
 
       - name: Run Rails tests
