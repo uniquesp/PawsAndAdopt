@@ -72,7 +72,7 @@ gem "jwt"
 gem "will_paginate", "~> 3.3.1" # Latest stable version
 gem "will_paginate-bootstrap5"
 
-gem "byebug", "~> 11.1"
+gem "byebug", "~> 12.0"
 gem "rack-cors"
 gem "ransack"
 gem "faker"
