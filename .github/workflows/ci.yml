@@ -1,92 +1,100 @@
 name: CI
-
 on:
   pull_request:
   push:
     branches: [ main ]
-
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Read Ruby version from backend/.ruby-version
         id: ruby-version
         run: echo "version=$(cat backend/.ruby-version)" >> $GITHUB_OUTPUT
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
-
+          working-directory: backend
+      - name: Install dependencies
+        run: bundle install
+        working-directory: backend
       - name: Scan for common Rails security vulnerabilities
         run: bundle exec brakeman --no-pager
         working-directory: backend
-
   scan_js:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Install JS dependencies
         run: yarn install
         working-directory: frontend
-
       - name: Audit JS packages
         run: yarn audit --groups dependencies
         working-directory: frontend
-
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Read Ruby version from backend/.ruby-version
         id: ruby-version
         run: echo "version=$(cat backend/.ruby-version)" >> $GITHUB_OUTPUT
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
-
+          working-directory: backend
+      - name: Install dependencies
+        run: bundle install
+        working-directory: backend
       - name: Lint code with RuboCop
         run: bundle exec rubocop -f github
         working-directory: backend
-
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - name: Install required Linux packages
         run: sudo apt-get update && sudo apt-get install -y google-chrome-stable curl libjemalloc2 libvips sqlite3
-
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Read Ruby version from backend/.ruby-version
         id: ruby-version
         run: echo "version=$(cat backend/.ruby-version)" >> $GITHUB_OUTPUT
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
-
+          working-directory: backend
+      - name: Install dependencies
+        run: bundle install
+        working-directory: backend
       - name: Run Rails tests
         env:
           RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
         run: |
           bundle exec rails db:test:prepare
           bundle exec rails test:system
         working-directory: backend
-
       - name: Upload failed screenshots
         if: failure()
         uses: actions/upload-artifact@v4
