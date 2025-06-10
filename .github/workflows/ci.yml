@@ -17,7 +17,7 @@ jobs:
         with:
           ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
-          working-directory: backend
+        working-directory: backend
       - name: Install dependencies
         run: bundle install
         working-directory: backend
@@ -48,7 +48,7 @@ jobs:
         with:
           ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
-          working-directory: backend
+        working-directory: backend
       - name: Install dependencies
         run: bundle install
         working-directory: backend
@@ -83,7 +83,7 @@ jobs:
         with:
           ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
-          working-directory: backend
+        working-directory: backend
       - name: Install dependencies
         run: bundle install
         working-directory: backend
